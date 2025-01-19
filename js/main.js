@@ -317,6 +317,41 @@ function logMessage(message, type = 'system') {
 
     logsContainer.appendChild(logEntry);
     logsContainer.scrollTop = logsContainer.scrollHeight;
+
+    // Save chat data to localStorage
+    if (type === 'user' || type === 'ai') {
+        saveChatData(type === 'user' ? 'User' : 'Bot', message);
+    }
+}
+
+/**
+ * Saves chat data to localStorage.
+ * @param {string} user - The user who sent the message (User or Bot).
+ * @param {string} message - The message content.
+ */
+function saveChatData(user, message) {
+    const chatEntry = {
+        timestamp: new Date().toISOString(),
+        user: user,
+        message: message
+    };
+
+    // Read existing chat data
+    let chatData = [];
+    try {
+        const data = localStorage.getItem('chatData');
+        if (data) {
+            chatData = JSON.parse(data);
+        }
+    } catch (error) {
+        console.error('Error reading chat data:', error);
+    }
+
+    // Add new chat entry
+    chatData.push(chatEntry);
+
+    // Save updated chat data to localStorage
+    localStorage.setItem('chatData', JSON.stringify(chatData));
 }
 
 /**
